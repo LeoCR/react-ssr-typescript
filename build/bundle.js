@@ -116,7 +116,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
   \******************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ \"./node_modules/react/index.js\");\n/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ \"./node_modules/react-dom/index.js\");\n/* harmony import */ var _App__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./App */ \"./src/client/App.tsx\");\n\n\n\nreact_dom__WEBPACK_IMPORTED_MODULE_1__.hydrate(react__WEBPACK_IMPORTED_MODULE_0__.createElement(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null,\n    react__WEBPACK_IMPORTED_MODULE_0__.createElement(_App__WEBPACK_IMPORTED_MODULE_2__.default, null)), document.getElementById(\"root\"));\n\n\n//# sourceURL=webpack://scs-pdf-server/./src/client/index.tsx?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ \"./node_modules/react/index.js\");\n/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ \"./node_modules/react-dom/index.js\");\n/* harmony import */ var _App__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./App */ \"./src/client/App.tsx\");\n\n\n\nreact_dom__WEBPACK_IMPORTED_MODULE_1__.hydrate(react__WEBPACK_IMPORTED_MODULE_0__.createElement(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null,\n    react__WEBPACK_IMPORTED_MODULE_0__.createElement(_App__WEBPACK_IMPORTED_MODULE_2__[\"default\"], null)), document.getElementById(\"root\"));\n\n\n//# sourceURL=webpack://scs-pdf-server/./src/client/index.tsx?");
 
 /***/ })
 
@@ -193,7 +193,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var reac
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("87e4e07c852590c9d2a5")
+/******/ 		__webpack_require__.h = () => ("ec75fcfcf01c259ba917")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */
@@ -466,8 +466,12 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var reac
 /******/ 		
 /******/ 		function setStatus(newStatus) {
 /******/ 			currentStatus = newStatus;
+/******/ 			var results = [];
+/******/ 		
 /******/ 			for (var i = 0; i < registeredStatusHandlers.length; i++)
-/******/ 				registeredStatusHandlers[i].call(null, newStatus);
+/******/ 				results[i] = registeredStatusHandlers[i].call(null, newStatus);
+/******/ 		
+/******/ 			return Promise.all(results);
 /******/ 		}
 /******/ 		
 /******/ 		function trackBlockingPromise(promise) {
@@ -476,7 +480,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var reac
 /******/ 					setStatus("prepare");
 /******/ 					blockingPromises.push(promise);
 /******/ 					waitForBlockingPromises(function () {
-/******/ 						setStatus("ready");
+/******/ 						return setStatus("ready");
 /******/ 					});
 /******/ 					return promise;
 /******/ 				case "prepare":
@@ -500,47 +504,51 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var reac
 /******/ 			if (currentStatus !== "idle") {
 /******/ 				throw new Error("check() is only allowed in idle status");
 /******/ 			}
-/******/ 			setStatus("check");
-/******/ 			return __webpack_require__.hmrM().then(function (update) {
-/******/ 				if (!update) {
-/******/ 					setStatus(applyInvalidatedModules() ? "ready" : "idle");
-/******/ 					return null;
-/******/ 				}
-/******/ 		
-/******/ 				setStatus("prepare");
-/******/ 		
-/******/ 				var updatedModules = [];
-/******/ 				blockingPromises = [];
-/******/ 				currentUpdateApplyHandlers = [];
-/******/ 		
-/******/ 				return Promise.all(
-/******/ 					Object.keys(__webpack_require__.hmrC).reduce(function (
-/******/ 						promises,
-/******/ 						key
-/******/ 					) {
-/******/ 						__webpack_require__.hmrC[key](
-/******/ 							update.c,
-/******/ 							update.r,
-/******/ 							update.m,
-/******/ 							promises,
-/******/ 							currentUpdateApplyHandlers,
-/******/ 							updatedModules
+/******/ 			return setStatus("check")
+/******/ 				.then(__webpack_require__.hmrM)
+/******/ 				.then(function (update) {
+/******/ 					if (!update) {
+/******/ 						return setStatus(applyInvalidatedModules() ? "ready" : "idle").then(
+/******/ 							function () {
+/******/ 								return null;
+/******/ 							}
 /******/ 						);
-/******/ 						return promises;
-/******/ 					},
-/******/ 					[])
-/******/ 				).then(function () {
-/******/ 					return waitForBlockingPromises(function () {
-/******/ 						if (applyOnUpdate) {
-/******/ 							return internalApply(applyOnUpdate);
-/******/ 						} else {
-/******/ 							setStatus("ready");
+/******/ 					}
 /******/ 		
-/******/ 							return updatedModules;
-/******/ 						}
+/******/ 					return setStatus("prepare").then(function () {
+/******/ 						var updatedModules = [];
+/******/ 						blockingPromises = [];
+/******/ 						currentUpdateApplyHandlers = [];
+/******/ 		
+/******/ 						return Promise.all(
+/******/ 							Object.keys(__webpack_require__.hmrC).reduce(function (
+/******/ 								promises,
+/******/ 								key
+/******/ 							) {
+/******/ 								__webpack_require__.hmrC[key](
+/******/ 									update.c,
+/******/ 									update.r,
+/******/ 									update.m,
+/******/ 									promises,
+/******/ 									currentUpdateApplyHandlers,
+/******/ 									updatedModules
+/******/ 								);
+/******/ 								return promises;
+/******/ 							},
+/******/ 							[])
+/******/ 						).then(function () {
+/******/ 							return waitForBlockingPromises(function () {
+/******/ 								if (applyOnUpdate) {
+/******/ 									return internalApply(applyOnUpdate);
+/******/ 								} else {
+/******/ 									return setStatus("ready").then(function () {
+/******/ 										return updatedModules;
+/******/ 									});
+/******/ 								}
+/******/ 							});
+/******/ 						});
 /******/ 					});
 /******/ 				});
-/******/ 			});
 /******/ 		}
 /******/ 		
 /******/ 		function hotApply(options) {
@@ -569,21 +577,20 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var reac
 /******/ 				.filter(Boolean);
 /******/ 		
 /******/ 			if (errors.length > 0) {
-/******/ 				setStatus("abort");
-/******/ 				return Promise.resolve().then(function () {
+/******/ 				return setStatus("abort").then(function () {
 /******/ 					throw errors[0];
 /******/ 				});
 /******/ 			}
 /******/ 		
 /******/ 			// Now in "dispose" phase
-/******/ 			setStatus("dispose");
+/******/ 			var disposePromise = setStatus("dispose");
 /******/ 		
 /******/ 			results.forEach(function (result) {
 /******/ 				if (result.dispose) result.dispose();
 /******/ 			});
 /******/ 		
 /******/ 			// Now in "apply" phase
-/******/ 			setStatus("apply");
+/******/ 			var applyPromise = setStatus("apply");
 /******/ 		
 /******/ 			var error;
 /******/ 			var reportError = function (err) {
@@ -602,25 +609,27 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var reac
 /******/ 				}
 /******/ 			});
 /******/ 		
-/******/ 			// handle errors in accept handlers and self accepted module load
-/******/ 			if (error) {
-/******/ 				setStatus("fail");
-/******/ 				return Promise.resolve().then(function () {
-/******/ 					throw error;
-/******/ 				});
-/******/ 			}
-/******/ 		
-/******/ 			if (queuedInvalidatedModules) {
-/******/ 				return internalApply(options).then(function (list) {
-/******/ 					outdatedModules.forEach(function (moduleId) {
-/******/ 						if (list.indexOf(moduleId) < 0) list.push(moduleId);
+/******/ 			return Promise.all([disposePromise, applyPromise]).then(function () {
+/******/ 				// handle errors in accept handlers and self accepted module load
+/******/ 				if (error) {
+/******/ 					return setStatus("fail").then(function () {
+/******/ 						throw error;
 /******/ 					});
-/******/ 					return list;
-/******/ 				});
-/******/ 			}
+/******/ 				}
 /******/ 		
-/******/ 			setStatus("idle");
-/******/ 			return Promise.resolve(outdatedModules);
+/******/ 				if (queuedInvalidatedModules) {
+/******/ 					return internalApply(options).then(function (list) {
+/******/ 						outdatedModules.forEach(function (moduleId) {
+/******/ 							if (list.indexOf(moduleId) < 0) list.push(moduleId);
+/******/ 						});
+/******/ 						return list;
+/******/ 					});
+/******/ 				}
+/******/ 		
+/******/ 				return setStatus("idle").then(function () {
+/******/ 					return outdatedModules;
+/******/ 				});
+/******/ 			});
 /******/ 		}
 /******/ 		
 /******/ 		function applyInvalidatedModules() {
@@ -667,7 +676,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var reac
 /******/ 		// object to store loaded and loading chunks
 /******/ 		// undefined = chunk not loaded, null = chunk preloaded/prefetched
 /******/ 		// [resolve, reject, Promise] = chunk loading, 0 = chunk loaded
-/******/ 		var installedChunks = {
+/******/ 		var installedChunks = __webpack_require__.hmrS_jsonp = __webpack_require__.hmrS_jsonp || {
 /******/ 			"main": 0
 /******/ 		};
 /******/ 		

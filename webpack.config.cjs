@@ -51,8 +51,8 @@ const server = Object.assign({}, config, {
   externals: [nodeExternals()],
   entry: path.resolve(__dirname, "src/server/index.tsx"),
   output: {
-    filename: "server.js",
-    path: path.resolve(__dirname, "build"),
+    filename: "server.cjs",
+    path: path.resolve(__dirname, "private/build"),
   },
 });
 
